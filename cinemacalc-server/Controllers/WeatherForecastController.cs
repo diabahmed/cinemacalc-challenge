@@ -79,8 +79,8 @@ namespace CinemaCalcServer.Controllers
         [HttpDelete("{id}", Name = "DeleteWeatherForecast")]
         public async Task<ActionResult> Delete(int id)
         {
-            var result = await _weatherForecastService.DeleteWeatherForecastAsync(id);
-            if (!result)
+            var isDeleted = await _weatherForecastService.DeleteWeatherForecastAsync(id);
+            if (!isDeleted)
             {
                 _logger.LogError($"WeatherForecast with id {id} not found.");
                 return NotFound();
