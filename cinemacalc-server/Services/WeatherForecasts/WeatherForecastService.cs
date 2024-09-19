@@ -1,68 +1,40 @@
-using Microsoft.EntityFrameworkCore;
 using CinemaCalcServer.Models;
-using CinemaCalcServer.Data;
+using CinemaCalcServer.Data.Repositories;
 
 namespace CinemaCalcServer.Services.WeatherForecasts
 {
     public class WeatherForecastService : IWeatherForecastService
     {
-        private readonly CinemaCalcDbContext _dbContext;
+        private readonly IWeatherForecastRepository _repository;
 
-        public WeatherForecastService(CinemaCalcDbContext dbContext)
+        public WeatherForecastService(IWeatherForecastRepository repository)
         {
-            _dbContext = dbContext;
+            _repository = repository;
         }
 
         public async Task<WeatherForecast> CreateWeatherForecastAsync(WeatherForecast weatherForecast)
         {
-            await _dbContext.WeatherForecasts.AddAsync(weatherForecast);
-            await _dbContext.SaveChangesAsync();
-            return weatherForecast;
+            return await _repository.CreateWeatherForecastAsync(weatherForecast);
         }
 
         public async Task<IEnumerable<WeatherForecast>> GetWeatherForecastsAsync()
         {
-            return await _dbContext.WeatherForecasts.ToListAsync();
+            return await _repository.GetWeatherForecastsAsync();
         }
 
         public async Task<WeatherForecast> GetWeatherForecastByIdAsync(int id)
         {
-            var weatherForecast = await _dbContext.WeatherForecasts.FindAsync(id);
-            if (weatherForecast == null)
-            {
-                throw new KeyNotFoundException($"WeatherForecast with id {id} not found.");
-            }
-            return weatherForecast;
+            return await _repository.GetWeatherForecastByIdAsync(id);
         }
 
         public async Task<WeatherForecast> UpdateWeatherForecastAsync(int id, WeatherForecast weatherForecast)
         {
-            var existingWeatherForecast = await _dbContext.WeatherForecasts.FindAsync(id);
-            if (existingWeatherForecast == null)
-            {
-                throw new KeyNotFoundException($"WeatherForecast with id {id} not found.");
-            }
-
-            existingWeatherForecast.Date = weatherForecast.Date;
-            existingWeatherForecast.TemperatureC = weatherForecast.TemperatureC;
-            existingWeatherForecast.Summary = weatherForecast.Summary;
-
-            _dbContext.WeatherForecasts.Update(existingWeatherForecast);
-            await _dbContext.SaveChangesAsync();
-            return existingWeatherForecast;
+            return await _repository.UpdateWeatherForecastAsync(id, weatherForecast);
         }
 
         public async Task<bool> DeleteWeatherForecastAsync(int id)
         {
-            var weatherForecast = await _dbContext.WeatherForecasts.FindAsync(id);
-            if (weatherForecast == null)
-            {
-                return false;
-            }
-
-            _dbContext.WeatherForecasts.Remove(weatherForecast);
-            await _dbContext.SaveChangesAsync();
-            return true;
+            return await _repository.DeleteWeatherForecastAsync(id);
         }
     }
 }

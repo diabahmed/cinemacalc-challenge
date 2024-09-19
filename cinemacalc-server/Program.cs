@@ -1,16 +1,17 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Diagnostics;
 using CinemaCalcServer.Data;
-using CinemaCalcServer.Services;
 using CinemaCalcServer.Services.WeatherForecasts;
+using CinemaCalcServer.Data.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Configure the container's services
-builder.Services.AddDbContext<CinemaCalcDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<CinemaCalcDbContext>(options => options.UseNpgsql(connectionString));
 
-builder.Services.AddTransient<IWeatherForecastService, WeatherForecastService>();
+builder.Services.AddScoped<IWeatherForecastRepository, WeatherForecastRepository>();
+builder.Services.AddScoped<IWeatherForecastService, WeatherForecastService>();
 
 builder.Services.AddCors(options =>
 {
@@ -71,7 +72,7 @@ using (var scope = app.Services.CreateScope())
     Console.WriteLine($"Database connection successful: {testConnection}");
     if (testConnection)
     {
-        MigrationService.InitializeMigration(app);
+        dbContext.Database.Migrate();
     }
 }
 
