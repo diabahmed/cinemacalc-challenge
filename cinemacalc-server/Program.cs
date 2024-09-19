@@ -63,15 +63,16 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-// Test database connection on startup
+// Test database connection on startup and apply migrations if successful
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<CinemaCalcDbContext>();
     var testConnection = dbContext.Database.CanConnect();
     Console.WriteLine($"Database connection successful: {testConnection}");
+    if (testConnection)
+    {
+        MigrationService.InitializeMigration(app);
+    }
 }
-
-// Initialize database migration
-MigrationService.InitializeMigration(app);
 
 app.Run();
