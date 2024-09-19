@@ -1,21 +1,28 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Diagnostics;
 using CinemaCalcServer.Data;
-using CinemaCalcServer.Services.WeatherForecasts;
 using CinemaCalcServer.Data.Repositories;
+using CinemaCalcServer.Services.Expenses;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configure the container's services
+// Add services to the container.
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+// Register DbContext
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<CinemaCalcDbContext>(options => options.UseNpgsql(connectionString));
 
-builder.Services.AddScoped<IWeatherForecastRepository, WeatherForecastRepository>();
-builder.Services.AddScoped<IWeatherForecastService, WeatherForecastService>();
+// Register repositories and services for dependency injection
+builder.Services.AddScoped<IExpenseRepository, ExpenseRepository>();
+builder.Services.AddScoped<IExpenseService, ExpenseService>();
 
+// Register CORS policy to allow requests from React frontend
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("MyCorsPolicy", builder =>
+    options.AddPolicy("FrontendCors", builder =>
     {
         builder.WithOrigins("http://localhost:3000")
             .AllowAnyHeader()
@@ -23,10 +30,6 @@ builder.Services.AddCors(options =>
             .AllowCredentials();
     });
 });
-
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
@@ -37,7 +40,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors("MyCorsPolicy");
+app.UseCors("FrontendCors");
 
 app.UseExceptionHandler(errorApp =>
 {
@@ -59,9 +62,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseRouting();
-
 app.UseAuthorization();
-
 app.MapControllers();
 
 // Test database connection on startup and apply migrations if successful
@@ -71,9 +72,7 @@ using (var scope = app.Services.CreateScope())
     var testConnection = dbContext.Database.CanConnect();
     Console.WriteLine($"Database connection successful: {testConnection}");
     if (testConnection)
-    {
         dbContext.Database.Migrate();
-    }
 }
 
 app.Run();

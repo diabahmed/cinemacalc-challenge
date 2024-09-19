@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
@@ -13,18 +12,18 @@ namespace CinemaCalcServer.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "WeatherForecasts",
+                name: "Expenses",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Date = table.Column<DateOnly>(type: "date", nullable: false),
-                    TemperatureC = table.Column<int>(type: "integer", nullable: false),
-                    Summary = table.Column<string>(type: "text", nullable: true)
+                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Price = table.Column<decimal>(type: "numeric(13,2)", nullable: false),
+                    PercentageMarkup = table.Column<decimal>(type: "numeric(5,2)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_WeatherForecasts", x => x.Id);
+                    table.PrimaryKey("PK_Expenses", x => x.Id);
                 });
         }
 
@@ -32,7 +31,7 @@ namespace CinemaCalcServer.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "WeatherForecasts");
+                name: "Expenses");
         }
     }
 }

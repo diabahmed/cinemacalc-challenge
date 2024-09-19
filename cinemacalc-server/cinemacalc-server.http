@@ -1,6 +1,6 @@
 @cinemacalc_server_HostAddress = http://localhost:5159
 
-GET {{cinemacalc_server_HostAddress}}/weatherforecast/
+GET {{cinemacalc_server_HostAddress}}/api/expenses/
 Accept: application/json
 
 ###

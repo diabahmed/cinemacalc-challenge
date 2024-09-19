@@ -5,11 +5,10 @@ namespace CinemaCalcServer.Data
 {
     public class CinemaCalcDbContext : DbContext
     {
-        public CinemaCalcDbContext(DbContextOptions<CinemaCalcDbContext> options)
-            : base(options)
+        public CinemaCalcDbContext(DbContextOptions<CinemaCalcDbContext> options) : base(options)
         {
         }
 
-        public DbSet<WeatherForecast> WeatherForecasts { get; set; }
+        public DbSet<Expense> Expenses { get; set; }
     }
 }
