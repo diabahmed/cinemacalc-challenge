@@ -47,8 +47,6 @@ namespace CinemaCalcServer.Controllers
                     {
                         case "23514":
                             return BadRequest("Invalid data: Check constraint violation. Please check the data and try again.");
-                        case "23505":
-                            return BadRequest("A record with this data already exists.");
                         case "22003":
                             return BadRequest("Invalid data: Numeric value out of range.");
                         default:
@@ -113,8 +111,6 @@ namespace CinemaCalcServer.Controllers
                     {
                         case "23514":
                             return BadRequest("Invalid data: Check constraint violation. Please check the data and try again.");
-                        case "23505":
-                            return BadRequest("A record with this data already exists.");
                         case "22003":
                             return BadRequest("Invalid data: Numeric value out of range.");
                         default:
