@@ -1,0 +1,6 @@
+{
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": "explicit"
+    },
+    "typescript.preferences.importModuleSpecifier": "non-relative"
+}
