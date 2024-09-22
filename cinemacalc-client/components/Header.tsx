@@ -6,8 +6,8 @@ import { Button } from "./ui/button";
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-20 w-full backdrop-blur-sm bg-background/50">
-      <div className="flex items-center justify-between p-4 mx-auto">
+    <header className="sticky top-0 z-50 w-full backdrop-blur-md bg-[#f6f3ee]-500">
+      <div className="flex items-center justify-between py-4 px-14 mx-auto">
         <a href="/" className="flex flex-row justify-center items-center gap-3">
           <Logo className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6" />
           <h1

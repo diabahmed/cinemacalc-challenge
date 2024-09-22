@@ -58,6 +58,23 @@ export const updateExpense = createAsyncThunk<
   }
 });
 
+export const updateExpenses = createAsyncThunk<
+  Expense[],
+  Expense[],
+  {
+    rejectValue: string;
+  }
+>("expenses/updateExpenses", async (expenses, { rejectWithValue }) => {
+  try {
+    const updatedExpenses = await Promise.all(
+      expenses.map((expense) => api.updateExpense(expense))
+    );
+    return updatedExpenses;
+  } catch (error) {
+    return rejectWithValue((error as Error).message);
+  }
+});
+
 export const deleteExpense = createAsyncThunk<
   number,
   number,
@@ -108,6 +125,12 @@ export const expensesSlice = createSlice({
           if (index !== -1) {
             state.expenses[index] = action.payload;
           }
+        }
+      )
+      .addCase(
+        updateExpenses.fulfilled,
+        (state, action: PayloadAction<Expense[]>) => {
+          state.expenses = action.payload;
         }
       )
       .addCase(

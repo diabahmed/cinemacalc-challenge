@@ -1,19 +1,25 @@
 "use client";
 
 import { proximaSoft } from "@/app/fonts";
+import { ExpenseList } from "@/components/ExpenseList";
+import { ExpenseListSkeleton } from "@/components/ExpenseListSkeleton";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { fetchExpenses } from "@/store/expensesSlice";
+import {
+  deleteExpense,
+  fetchExpenses,
+  updateExpenses,
+} from "@/store/expensesSlice";
 import { AppDispatch, RootState } from "@/store/store";
-import React, { useEffect, useMemo } from "react";
+import { RefreshCcw } from "lucide-react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import AddExpenseModal from "./AddExpenseModal";
 import { AnimatedNumber } from "./AnimatedNumber";
-import { ExpensesTable } from "./ExpensesTable";
-import { ExpenseTableSkeleton } from "./ExpenseTableSkeleton";
 
 const CinemaCalc: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { expenses, status, error } = useSelector(
+  const { expenses, status } = useSelector(
     (state: RootState) => state.expenses
   );
 
@@ -23,38 +29,57 @@ const CinemaCalc: React.FC = () => {
     }
   }, [status, dispatch]);
 
+  const handleUpdateExpenses = useCallback(
+    (updatedExpenses: Expense[]) => {
+      dispatch(updateExpenses(updatedExpenses));
+    },
+    [dispatch]
+  );
+
+  const handleDeleteExpense = useCallback(
+    (id: number) => {
+      dispatch(deleteExpense(id));
+    },
+    [dispatch]
+  );
+
   const totalSum = useMemo(
     () => expenses.reduce((sum, expense) => sum + expense.totalPrice, 0),
     [expenses]
   );
 
   if (status === "loading" || status === "idle") {
-    return <ExpenseTableSkeleton />;
+    return <ExpenseListSkeleton />;
   }
 
   if (status === "failed") {
     return (
-      <div className="text-red-500 text-center py-4">
-        <p>Error: {error}</p>
-        <button
+      <div className="text-red-500 text-center py-4 flex flex-col justify-center items-center">
+        <p>Something went wrong :/</p>
+        <Button
           onClick={() => dispatch(fetchExpenses())}
-          className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          className="mt-2 px-4 py-2 text-white rounded bg-[#1D4E89] hover:bg-[#1a4376] flex items-center justify-center"
         >
-          Retry again
-        </button>
+          <RefreshCcw className="w-4 h-4 mr-2" />
+          <span>Retry again</span>
+        </Button>
       </div>
     );
   }
 
   return (
-    <div className="mt-5 w-full flex flex-col">
+    <div className="mt-2 w-full flex flex-col">
       {expenses.length > 0 ? (
         <>
-          <div className="mb-5 flex justify-center items-center">
+          <div className="flex flex-col sm:flex-row justify-between items-center mb-4 space-y-2 sm:space-y-0">
             <AddExpenseModal />
           </div>
-          <ExpensesTable expenses={expenses} />
-          <div className="mt-5 w-full text-center text-l">
+          <ExpenseList
+            expenses={expenses}
+            onUpdate={handleUpdateExpenses}
+            onDelete={handleDeleteExpense}
+          />
+          <div className="mt-5 w-full text-center text-lg">
             <strong>
               <span className={cn(proximaSoft.className, "font-extrabold")}>
                 Σ Total Sum:{" "}
