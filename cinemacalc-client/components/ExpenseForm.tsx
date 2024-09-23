@@ -20,7 +20,7 @@ const expenseSchema = z.object({
     .number({
       message: "Percentage markup must be a number",
     })
-    .min(0.01, "Percentage markup must be positive")
+    .min(0, "Percentage markup must be zero or more")
     .max(100, "Percentage markup cannot exceed 100%"),
 });
 
