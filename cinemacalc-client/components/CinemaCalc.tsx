@@ -5,14 +5,10 @@ import { ExpenseList } from "@/components/ExpenseList";
 import { ExpenseListSkeleton } from "@/components/ExpenseListSkeleton";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import {
-  deleteExpense,
-  fetchExpenses,
-  updateExpenses,
-} from "@/store/expensesSlice";
+import { fetchExpenses } from "@/store/expensesSlice";
 import { AppDispatch, RootState } from "@/store/store";
 import { RefreshCcw } from "lucide-react";
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import AddExpenseModal from "./AddExpenseModal";
 import { AnimatedNumber } from "./AnimatedNumber";
@@ -28,20 +24,6 @@ const CinemaCalc: React.FC = () => {
       dispatch(fetchExpenses());
     }
   }, [status, dispatch]);
-
-  const handleUpdateExpenses = useCallback(
-    (updatedExpenses: Expense[]) => {
-      dispatch(updateExpenses(updatedExpenses));
-    },
-    [dispatch]
-  );
-
-  const handleDeleteExpense = useCallback(
-    (id: number) => {
-      dispatch(deleteExpense(id));
-    },
-    [dispatch]
-  );
 
   const totalSum = useMemo(
     () => expenses.reduce((sum, expense) => sum + expense.totalPrice, 0),
@@ -74,11 +56,7 @@ const CinemaCalc: React.FC = () => {
           <div className="flex flex-col sm:flex-row justify-between items-center mb-4 space-y-2 sm:space-y-0">
             <AddExpenseModal />
           </div>
-          <ExpenseList
-            expenses={expenses}
-            onUpdate={handleUpdateExpenses}
-            onDelete={handleDeleteExpense}
-          />
+          <ExpenseList expenses={expenses} dispatch={dispatch} />
           <div className="mt-5 w-full text-center text-lg">
             <strong>
               <span className={cn(proximaSoft.className, "font-extrabold")}>

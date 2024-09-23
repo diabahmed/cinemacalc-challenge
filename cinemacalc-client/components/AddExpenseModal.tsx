@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -27,6 +28,9 @@ const AddExpenseModal = () => {
           <DialogTitle className="text-xl font-semibold">
             Add New Expense
           </DialogTitle>
+          <DialogDescription>
+            Fill in the form below to add a new expense.
+          </DialogDescription>
         </DialogHeader>
         <ExpenseForm onSuccess={() => setOpen(false)} />
       </DialogContent>

@@ -11,11 +11,17 @@ import * as z from "zod";
 
 const expenseSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  price: z.number().min(1, "Price must be positive"),
+  price: z
+    .number({
+      message: "Price must be a number",
+    })
+    .min(0.01, "Price must be positive"),
   percentageMarkup: z
-    .number()
-    .min(1, "Percentage must be positive")
-    .max(100, "Markup cannot exceed 100%"),
+    .number({
+      message: "Price must be a number",
+    })
+    .min(0.01, "Percentage markup must be positive")
+    .max(100, "Percentage markup cannot exceed 100%"),
 });
 
 type ExpenseFormData = z.infer<typeof expenseSchema>;
@@ -29,6 +35,9 @@ export const ExpenseForm = ({ onSuccess }: ExpenseFormProps) => {
   const { toast } = useToast();
   const { control, handleSubmit, reset } = useForm<ExpenseFormData>({
     resolver: zodResolver(expenseSchema),
+    defaultValues: {
+      name: "",
+    },
   });
 
   const onSubmit = (values: ExpenseFormData) => {
@@ -56,7 +65,13 @@ export const ExpenseForm = ({ onSuccess }: ExpenseFormProps) => {
           control={control}
           render={({ field, fieldState: { error } }) => (
             <>
-              <Input id="name" placeholder="e.g., Actor, Camera" {...field} />
+              <Input
+                id="name"
+                placeholder="e.g., Actor, Camera"
+                autoComplete="on"
+                minLength={1}
+                {...field}
+              />
               {error && <p className="text-red-500 text-sm">{error.message}</p>}
             </>
           )}
@@ -74,6 +89,7 @@ export const ExpenseForm = ({ onSuccess }: ExpenseFormProps) => {
                 type="number"
                 step="0.01"
                 placeholder="0.00"
+                min={0}
                 {...field}
                 onChange={(e) => field.onChange(parseFloat(e.target.value))}
               />
@@ -94,6 +110,8 @@ export const ExpenseForm = ({ onSuccess }: ExpenseFormProps) => {
                 type="number"
                 step="0.01"
                 placeholder="0.00"
+                min={0}
+                max={100}
                 {...field}
                 onChange={(e) => field.onChange(parseFloat(e.target.value))}
               />

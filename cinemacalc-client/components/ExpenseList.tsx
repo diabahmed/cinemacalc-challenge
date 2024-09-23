@@ -6,26 +6,38 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import useDebounce from "@/hooks/use-debounce";
+import { useToast } from "@/hooks/use-toast";
+import { deleteExpense, updateExpenses } from "@/store/expensesSlice";
+import { AppDispatch } from "@/store/store";
 import { AnimatePresence, motion } from "framer-motion";
 import { Info, Trash2 } from "lucide-react";
 import React, { useCallback, useEffect, useState } from "react";
 
 interface ExpenseListProps {
   expenses: Expense[];
-  onUpdate: (expenses: Expense[]) => void;
-  onDelete: (id: number) => void;
+  dispatch: AppDispatch;
 }
 
 export const ExpenseList: React.FC<ExpenseListProps> = ({
   expenses,
-  onUpdate,
-  onDelete,
+  dispatch,
 }) => {
+  const { toast } = useToast();
+  const [disabledButtons, setDisabledButtons] = useState<{
+    [key: number]: boolean;
+  }>({});
   const [items, setItems] = useState(expenses);
 
   useEffect(() => {
     setItems(expenses);
   }, [expenses]);
+
+  const onUpdate = useCallback(
+    (updatedExpenses: Expense[]) => {
+      dispatch(updateExpenses(updatedExpenses));
+    },
+    [dispatch]
+  );
 
   const handleUpdate = useCallback(
     (updatedItems: Expense[]) => {
@@ -36,6 +48,26 @@ export const ExpenseList: React.FC<ExpenseListProps> = ({
     [expenses, onUpdate]
   );
 
+  const onDelete = useCallback(
+    (id: number) => {
+      setDisabledButtons((prev) => ({ ...prev, [id]: true }));
+      dispatch(deleteExpense(id))
+        .unwrap()
+        .then(() => {
+          setDisabledButtons((prev) => ({ ...prev, [id]: false }));
+        })
+        .catch(() => {
+          setDisabledButtons((prev) => ({ ...prev, [id]: false }));
+          toast({
+            title: "Error",
+            description: "Failed to delete the expense. Try again.",
+            variant: "destructive",
+          });
+        });
+    },
+    [dispatch, toast]
+  );
+
   useDebounce(items, 500, handleUpdate);
 
   const handleInputChange = useCallback(
@@ -43,7 +75,50 @@ export const ExpenseList: React.FC<ExpenseListProps> = ({
       setItems((prevItems) =>
         prevItems.map((item) => {
           if (item.id === id) {
-            const updatedItem = { ...item, [field]: value };
+            const updatedItem = { ...item };
+
+            if (field === "name" && typeof value === "string") {
+              if (value.trim() === "") {
+                toast({
+                  title: "Input Error",
+                  description: "Name cannot be empty.",
+                  variant: "destructive",
+                });
+                return item;
+              }
+              updatedItem.name = value;
+            }
+
+            if (field === "price" && typeof value === "number") {
+              if (value <= 0) {
+                toast({
+                  title: "Input Error",
+                  description: "Price must be positive.",
+                  variant: "destructive",
+                });
+                return item;
+              }
+              updatedItem.price = value;
+            }
+
+            if (field === "percentageMarkup" && typeof value === "number") {
+              if (value < 0) {
+                toast({
+                  title: "Input Error",
+                  description: "Percentage markup must be positive",
+                  variant: "destructive",
+                });
+                return item;
+              } else if (value > 100) {
+                toast({
+                  title: "Input Error",
+                  description: "Percentage markup cannot exceed 100%.",
+                  variant: "destructive",
+                });
+                return item;
+              }
+              updatedItem.percentageMarkup = value;
+            }
 
             if (field === "price" || field === "percentageMarkup") {
               updatedItem.totalPrice =
@@ -56,7 +131,7 @@ export const ExpenseList: React.FC<ExpenseListProps> = ({
         })
       );
     },
-    []
+    [toast]
   );
 
   return (
@@ -99,17 +174,22 @@ export const ExpenseList: React.FC<ExpenseListProps> = ({
               >
                 <td className="p-2">
                   <Input
+                    name="name"
+                    autoComplete="on"
                     value={expense.name}
                     onChange={(e) =>
                       handleInputChange(expense.id, "name", e.target.value)
                     }
-                    className="w-full border-gray-300"
+                    className="w-full min-w-24 border-gray-300"
                   />
                 </td>
                 <td className="p-2">
                   <Input
+                    name="price"
                     type="number"
                     value={expense.price}
+                    min={0.01}
+                    step={0.01}
                     onChange={(e) =>
                       handleInputChange(
                         expense.id,
@@ -122,8 +202,12 @@ export const ExpenseList: React.FC<ExpenseListProps> = ({
                 </td>
                 <td className="p-2">
                   <Input
+                    name="percentageMarkup"
                     type="number"
                     value={expense.percentageMarkup}
+                    min={0}
+                    max={100}
+                    step={0.01}
                     onChange={(e) =>
                       handleInputChange(
                         expense.id,
@@ -141,6 +225,7 @@ export const ExpenseList: React.FC<ExpenseListProps> = ({
                 </td>
                 <td className="p-2">
                   <Button
+                    disabled={disabledButtons[expense.id] || false}
                     variant="destructive"
                     size="icon"
                     onClick={() => onDelete(expense.id)}

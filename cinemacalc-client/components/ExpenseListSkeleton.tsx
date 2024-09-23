@@ -25,7 +25,7 @@ export const ExpenseListSkeleton: React.FC = () => {
             {[1, 2, 3].map((_, index) => (
               <tr key={index} className="border-b border-gray-200">
                 <td className="p-2">
-                  <Skeleton className="h-8 w-full bg-[#E2ECF9]" />
+                  <Skeleton className="h-8 w-full min-w-24 bg-[#E2ECF9]" />
                 </td>
                 <td className="p-2">
                   <Skeleton className="h-8 w-24 bg-[#E2ECF9]" />
