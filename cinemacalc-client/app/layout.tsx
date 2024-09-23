@@ -2,6 +2,7 @@ import { Providers } from "@/components/Providers";
 import { Toaster } from "@/components/ui/toaster";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
+import NextTopLoader from "nextjs-toploader";
 import { proximaNova } from "./fonts";
 import "./globals.css";
 
@@ -24,7 +25,10 @@ export default function RootLayout({
         )}
         suppressHydrationWarning={true}
       >
-        <Providers>{children}</Providers>
+        <Providers>
+          <NextTopLoader />
+          {children}
+        </Providers>
         <Toaster />
       </body>
     </html>
