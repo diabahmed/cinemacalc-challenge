@@ -18,7 +18,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={cn(proximaNova.className, "antialiased")}
+        className={cn(
+          proximaNova.className,
+          "antialiased max-w-full overflow-x-hidden"
+        )}
         suppressHydrationWarning={true}
       >
         <Providers>{children}</Providers>

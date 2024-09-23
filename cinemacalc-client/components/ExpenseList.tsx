@@ -7,8 +7,8 @@ import {
 } from "@/components/ui/tooltip";
 import useDebounce from "@/hooks/use-debounce";
 import { useToast } from "@/hooks/use-toast";
-import { deleteExpense, updateExpenses } from "@/store/expensesSlice";
-import { AppDispatch } from "@/store/store";
+import { deleteExpense, updateExpenses } from "@/state/expensesSlice";
+import { AppDispatch } from "@/state/store";
 import { AnimatePresence, motion } from "framer-motion";
 import { Info, Trash2 } from "lucide-react";
 import React, { useCallback, useEffect, useState } from "react";
