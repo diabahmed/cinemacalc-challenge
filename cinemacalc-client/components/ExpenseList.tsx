@@ -146,7 +146,7 @@ export const ExpenseList: React.FC<ExpenseListProps> = ({
               Total{" "}
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Info className="inline-block ml-1 w-3 h-3 text-gray-500 cursor-help" />
+                  <Info className="inline-block ml-1 w-3 h-3 text-foreground cursor-help" />
                 </TooltipTrigger>
                 <TooltipContent>
                   <p>Price + (Price * Markup %)</p>
