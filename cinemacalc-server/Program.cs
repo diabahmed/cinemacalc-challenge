@@ -38,16 +38,6 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-
-    // Test database connection on startup and apply migrations if successful
-    using (var scope = app.Services.CreateScope())
-    {
-        var dbContext = scope.ServiceProvider.GetRequiredService<CinemaCalcDbContext>();
-        var testConnection = dbContext.Database.CanConnect();
-        Console.WriteLine($"Database connection successful: {testConnection}");
-        if (testConnection)
-            dbContext.Database.Migrate();
-    }
 }
 else
 {
@@ -73,5 +63,22 @@ app.UseExceptionHandler(errorApp =>
 app.UseRouting();
 app.UseAuthorization();
 app.MapControllers();
+
+// Test database connection on startup and apply migrations if successful
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<CinemaCalcDbContext>();
+    var testConnection = dbContext.Database.CanConnect();
+    if (testConnection)
+    {
+        Console.WriteLine($"✅ Database connection successful ✅");
+        dbContext.Database.Migrate();
+    }
+    else
+    {
+        Console.WriteLine("❌ Database connection failed ❌");
+        return;
+    }
+}
 
 app.Run();

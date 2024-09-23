@@ -1,0 +1,57 @@
+services:
+  frontend:
+    container_name: next-frontend
+    image: ahmillect/cinemacalc:frontend
+    build:
+      context: ./cinemacalc-client
+      dockerfile: Dockerfile
+      args:
+        API_URL: "http://backend:5001/api/expenses"
+        BUILD_STANDALONE: true
+    restart: always
+    ports:
+      - 3000:3000
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+  backend:
+    container_name: dotnet-backend
+    image: ahmillect/cinemacalc:backend
+    build:
+      context: ./cinemacalc-server
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "5159:5001"
+    depends_on:
+      - db
+    environment:
+      - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=CinemaCalcDB;Username=postgres;Password=cinemacalc
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5001
+    networks:
+      - app-network
+
+  db:
+    container_name: postgres-db
+    image: postgres:latest
+    restart: always
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_DB=CinemaCalcDB
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=cinemacalc
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
