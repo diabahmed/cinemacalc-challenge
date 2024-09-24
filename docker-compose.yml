@@ -2,6 +2,7 @@ services:
   frontend:
     container_name: next-frontend
     image: ahmillect/cinemacalc:frontend
+    platform: linux/amd64
     build:
       context: ./cinemacalc-client
       dockerfile: Dockerfile
@@ -19,6 +20,7 @@ services:
   backend:
     container_name: dotnet-backend
     image: ahmillect/cinemacalc:backend
+    platform: linux/amd64
     build:
       context: ./cinemacalc-server
       dockerfile: Dockerfile
