@@ -163,11 +163,6 @@ export const ExpenseList: React.FC<ExpenseListProps> = ({
                 key={expense.id}
                 className="border-b border-gray-200"
                 tabIndex={0}
-                onKeyPress={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    onDelete(expense.id);
-                  }
-                }}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
