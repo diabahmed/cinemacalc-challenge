@@ -30,33 +30,38 @@ The application is built with a focus on performance, user experience, and data 
 ## Technologies Used
 
 ### Frontend
-  - Next.js 14 (App Router)
-  - TypeScript
-  - TailwindCSS
-  - shadcn/ui
-  - Redux Toolkit
-  - React Hook Form + Zod
+
+- Next.js 14 (App Router)
+- TypeScript
+- TailwindCSS
+- shadcn/ui
+- Redux Toolkit
+- React Hook Form + Zod
 
 ### Backend
-  - .NET 8
-  - Entity Framework Core
-  - PostgreSQL
-  - Swagger
+
+- .NET 8
+- Entity Framework Core
+- PostgreSQL
+- Swagger
 
 ### Containerization
-  - Docker
-  - Docker Compose
-  - Docker Hub
+
+- Docker
+- Docker Compose
+- Docker Hub
 
 ## How to Run Locally
 
 1. Clone the repository:
+
   ```bash
   git clone https://github.com/diabahmed/cinemacalc-challenge.git
   cd cinemacalc-challenge
   ```
 
 2. Start the application using Docker Compose:
+
   ```bash
   docker-compose up -d
   ```
@@ -65,10 +70,12 @@ The application is built with a focus on performance, user experience, and data 
 > If you don't have Docker installed, you can install it from [here](https://docs.docker.com/get-docker/).
 
 3. Access the application:
-  - Frontend: <http://localhost:3000>
-  - Backend API: <http://localhost:5159/swagger>
+
+- Frontend: <http://localhost:3000>
+- Backend API: <http://localhost:5159/swagger>
 
 4. Shutting down the services:
+
 ```bash
 docker-compose down -v
 ```
@@ -79,7 +86,7 @@ The project follows a clear separation of concerns and is divided into two main 
 
 ### Backend (`cinemacalc-server`)
 
-```
+```file
 cinemacalc-server/
 ├── Controllers/         # API endpoints
 ├── Data/                # Database context and repositories
@@ -92,7 +99,7 @@ cinemacalc-server/
 
 ### Frontend (`cinemacalc-client`)
 
-```
+```file
 cinemacalc-client/
 ├── app/                 # Next.js app router pages and layouts
 ├── components/          # Reusable React components
@@ -106,6 +113,7 @@ cinemacalc-client/
 ## State Management
 
 I chose Redux Toolkit for state management in this application for several reasons:
+
   1. **Centralized Store**: Redux provides a single source of truth for the application state, making it easier to manage and debug.
   2. **Predictable State Updates**: With Redux, state updates are made through pure functions (reducers), ensuring predictability and easier testing.
   3. **Developer Tools**: Redux DevTools offer powerful debugging capabilities, allowing me to inspect state changes over time.
@@ -117,6 +125,7 @@ I chose Redux Toolkit for state management in this application for several reaso
 ## Precise Number Calculations
 
 To ensure accurate financial calculations, I implemented the following strategies:
+
   1. **Decimal Type**: The backend uses C#'s `decimal` type for storing and calculating monetary values, which provides high precision for financial calculations.
   2. **Frontend Handling**: On the frontend, numbers are stored and manipulated as JavaScript numbers, which are 64-bit floating-point values.
   3. **Rounding**: When displaying values, the frontend uses `toFixed(2)` to round to two decimal places for presentation purposes.
@@ -163,14 +172,15 @@ The development process was broken down into the following tasks:
   - Write README
 
 ## Additional Notes
-  - **Server Actions**: Next.js Server Actions were used to simplify the data fetching process and improve performance by reducing client-side JavaScript.
-  - **Memoization**: I memoized the total expenses sum to reduce client computations.
-  - **Debouncing**: I implemented debouncing for expense updates to reduce unnecessary API calls and improve performance.
+
+- **Server Actions**: Next.js Server Actions were used to simplify the data fetching process and improve performance by reducing client-side JavaScript.
+- **Memoization**: I memoized the total expenses sum to reduce client computations.
+- **Debouncing**: I implemented debouncing for expense updates to reduce unnecessary API calls and improve performance.
 
 ## License
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-_Refer to the LICENSE.md file for more information_
+> Refer to the LICENSE.md file for more information
 
 © Copyright 2024
