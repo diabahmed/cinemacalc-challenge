@@ -71,7 +71,7 @@ using (var scope = app.Services.CreateScope())
     var testConnection = dbContext.Database.CanConnect();
     if (testConnection)
     {
-        Console.WriteLine($"✅ Database connection successful ✅");
+        Console.WriteLine("✅ Database connection successful ✅");
         dbContext.Database.Migrate();
     }
     else

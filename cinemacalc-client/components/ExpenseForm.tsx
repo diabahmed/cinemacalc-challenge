@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -5,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { addExpense } from "@/state/expensesSlice";
 import { AppDispatch } from "@/state/store";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import * as z from "zod";
@@ -33,6 +36,7 @@ interface ExpenseFormProps {
 export const ExpenseForm = ({ onSuccess }: ExpenseFormProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const { toast } = useToast();
+  const [isDisabled, setIsDisabled] = useState(false);
   const { control, handleSubmit, reset } = useForm<ExpenseFormData>({
     resolver: zodResolver(expenseSchema),
     defaultValues: {
@@ -41,11 +45,13 @@ export const ExpenseForm = ({ onSuccess }: ExpenseFormProps) => {
   });
 
   const onSubmit = (values: ExpenseFormData) => {
+    setIsDisabled(true);
     dispatch(addExpense(values))
       .unwrap()
       .then(() => {
         onSuccess();
         reset();
+        setIsDisabled(false);
       })
       .catch((error: Error) => {
         toast({
@@ -120,7 +126,11 @@ export const ExpenseForm = ({ onSuccess }: ExpenseFormProps) => {
           )}
         />
       </div>
-      <Button type="submit" className="w-full bg-[#1D4E89] hover:bg-[#1a4376]">
+      <Button
+        type="submit"
+        disabled={isDisabled}
+        className="w-full bg-[#1D4E89] hover:bg-[#1a4376]"
+      >
         Add
       </Button>
     </form>
